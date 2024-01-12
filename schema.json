@@ -6,7 +6,45 @@
     "friendlyName": "Super Field - Number",
     "description": "A Boolean Input Field component for Budibase",
     "icon": "123",
+    "context" : [
+      {
+        "type": "static",
+        "values": [
+          {
+            "label": "Value",
+            "key": "value",
+            "type": "number"
+          }, 
+          {
+            "label": "Unit",
+            "key": "unit",
+            "type": "string"
+          } 
+        ]
+      }
+    ],
     "settings": [
+      {
+        "type": "select",
+        "label": "Type",
+        "key": "controlType",
+        "defaultValue": "input",
+        "placeholder": "Pick Control type",
+        "options": [
+          {
+            "label": "Input",
+            "value": "input"
+          },
+          {
+            "label": "Stepper",
+            "value": "stepper"
+          },
+          {
+            "label": "Slider",
+            "value": "slider"
+          }
+        ]
+      },
       {
         "type": "field/number",
         "label": "Field",
@@ -21,14 +59,21 @@
       {
         "type": "text",
         "label": "Placeholder",
-        "key": "placeholder",
-        "placeholder": "Choose an option"
+        "key": "placeholder"
       },
       {
         "type": "text",
         "label": "Default value",
         "key": "defaultValue",
         "supportsConditions": false
+      },
+      {
+        "type": "text",
+        "label": "Formatted value",
+        "key": "template",
+        "placeholder" : "{{ Value }}",
+        "supportsConditions": false,
+        "nested" : true
       },
       {
         "type": "text",
@@ -46,10 +91,24 @@
         "key": "onChange",
         "context": [
           {
-            "label": "Field Value",
+            "label": "Value",
             "key": "value"
           }
         ]
+      },
+      {
+        "type": "boolean",
+        "label": "Debounced",
+        "key": "debounced",
+        "defaultValue": false
+      },
+      {
+        "type": "number",
+        "label": "Debounce Delay (ms)",
+        "key": "debounceDelay",
+        "minValue" : "200",
+        "defaultValue": 500,
+        "dependsOn": "debounced"
       },
       {
         "type": "boolean",
@@ -69,25 +128,62 @@
         }
       },
       {
-        "type": "select",
-        "label": "Type",
-        "key": "controlType",
-        "defaultValue": "select",
-        "placeholder": "Pick an options type",
-        "options": [
-          {
-            "label": "Select",
-            "value": "select"
-          },
-          {
-            "label": "Checkboxes",
-            "value": "checkbox"
-          },
-          {
-            "label": "Switches",
-            "value": "switch"
-          }
+        "type" : "boolean",
+        "key"  : "clearValueIcon",
+        "label": "Clear Value Icon"
+      },
+      {
+        "type" : "boolean",
+        "key"  : "showIcon",
+        "label": "Add Inline Icon"
+      },
+      {
+        "type" : "icon",
+        "key"  : "icon",
+        "label": "Icon",
+        "resetOn" : "showIcon",
+        "dependsOn" : "showIcon"
+      },
+      {
+        "type" : "boolean",
+        "key"  : "customButtons",
+        "label" : "Add Buttons"
+      },
+      {
+        "type" : "buttonConfiguration",
+        "key"  : "buttons",
+        "nested" : true,
+        "dependsOn" : "customButtons"
+      },
+      {
+        "type" : "boolean",
+        "key"  : "units",
+        "label": "Add Units"
+      },
+      {
+        "type" : "select",
+        "key"  : "unitsSource",
+        "label" : "Units Source",
+        "dependsOn" : "units",
+        "options" : [
+          { "label" : "Data Provider", "value" : "dataprovider" },
+          { "label" : "Custom", "value" : "custom" }
         ]
+      },
+      {
+        "type" : "options",
+        "key"  : "unitsList",
+        "label" : "Custom Units",
+        "dependsOn" : [
+          { "setting" : "units" , "value" : true },
+          { "setting" : "unitsSource" , "value" : "custom" }
+        ]
+      },
+      {
+        "type" : "text",
+        "key"  : "defaultUnit",
+        "label": "Default Unit",
+        "dependsOn" : "units"
       },
       {
         "tag" : "style",
