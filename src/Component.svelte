@@ -70,6 +70,7 @@
       disabled,
       readonly: readonly || disabled,
       icon,
+      error : fieldState?.error,
       debounce: debounced ? debounceDelay : false,
       clearValueIcon,
       role: "formInput", 
@@ -108,8 +109,13 @@
     use:styleable={$component.styles}  
   >
     {#if label}
-      <label for="superCell" class="superlabel" class:bound={formContext}>
+      <label for="superCell" class="superlabel" style:flex-direction={labelPos == "left" ? "column" : "row"}>
         {label}
+        {#if fieldState.error}
+          <div class="error">
+            <span>{fieldState.error}</span>
+          </div>
+        {/if}
       </label>
     {/if}
     
@@ -128,7 +134,7 @@
           class="spectrum-ActionGroup spectrum-ActionGroup--compact spectrum-ActionGroup--sizeM"
           class:spectrum-ActionGroup--quiet={buttonsQuiet}
         >
-          <Provider data={ {value}} >
+          <Provider data={ {value} } >
             {#each buttons as { text, onClick }}
               <BlockComponent
                 type = "plugin/bb-component-SuperButton"
@@ -143,13 +149,6 @@
         </div>
       {/if}
     </div>
-
-    {#if fieldState.error}
-      <div class="error">
-        <span>{fieldState.error}</span>
-      </div>
-    {/if}
-
   </div>
 </Block>
 
@@ -166,13 +165,13 @@
   }
   .superlabel {
     display: flex;
-    align-items: flex-start;
+    justify-content: space-between;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     min-width: var(--label-width);
     max-width: var(--label-width);
-    font-size: 12px;
+    font-size: 13px;
     line-height: 1.75rem;
     font-weight: 400;
     color: var(--spectrum-global-color-gray-700);
@@ -184,32 +183,11 @@
     justify-items: stretch;
     height: 2rem;
   }
-  .warning {
-    color: var(--spectrum-global-color-red-500);
-    border-color: var(--spectrum-global-color-red-500);
-  }
 
-  .spectrum-ActionButton--quiet.warning {
-    color: var(--spectrum-global-color-red-500);
-    border: none;
-  }
-
-  .warning:hover {
-    color: #000;
-    background-color: var(--spectrum-global-color-red-500);
-  }
-  .cta {
-    color: #fff;
-    background-color: var(--primaryColor);
-  }
-
-  .disabled {
-    color: var(--spectrum-global-color-gray-600);
-    background-color: var(--spectrum-global-color-gray-200);
-  }
-
-  .superlabel.bound {
-    gap: 0.5rem;
+  .error {
+    font-size: 12px;
+    line-height: 1.75rem;
+    color: var(--spectrum-global-color-red-700);
   }
 </style>
 

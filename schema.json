@@ -25,27 +25,6 @@
     ],
     "settings": [
       {
-        "type": "select",
-        "label": "Type",
-        "key": "controlType",
-        "defaultValue": "input",
-        "placeholder": "Pick Control type",
-        "options": [
-          {
-            "label": "Input",
-            "value": "input"
-          },
-          {
-            "label": "Stepper",
-            "value": "stepper"
-          },
-          {
-            "label": "Slider",
-            "value": "slider"
-          }
-        ]
-      },
-      {
         "type": "field/number",
         "label": "Field",
         "key": "field",
@@ -93,6 +72,27 @@
           {
             "label": "Value",
             "key": "value"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "label": "Control Type",
+        "key": "controlType",
+        "defaultValue": "input",
+        "placeholder": "Pick Control type",
+        "options": [
+          {
+            "label": "Input",
+            "value": "input"
+          },
+          {
+            "label": "Stepper",
+            "value": "stepper"
+          },
+          {
+            "label": "Slider",
+            "value": "slider"
           }
         ]
       },
