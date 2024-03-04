@@ -1,7 +1,7 @@
 <script>
   import { getContext , onDestroy} from "svelte";
-  import CellNumber from "../../bb_super_components_shared/src/lib/SuperCell/cells/CellNumber.svelte";
-
+  import CellNumber from "../../bb_super_components_shared/src/lib/SuperTableCells/CellNumber.svelte";
+  
   const { styleable, Provider, BlockComponent, Block } = getContext("sdk");
   const component = getContext("component");
 
