@@ -6,20 +6,16 @@
     "friendlyName": "Super Field - Number",
     "description": "A Boolean Input Field component for Budibase",
     "icon": "123",
-    "context" : [
+    "context": [
       {
         "type": "static",
+        "scope": "global",
         "values": [
           {
-            "label": "Value",
             "key": "value",
+            "label": "value",
             "type": "number"
-          }, 
-          {
-            "label": "Unit",
-            "key": "unit",
-            "type": "string"
-          } 
+          }
         ]
       }
     ],
@@ -28,12 +24,13 @@
         "type": "field/number",
         "label": "Field",
         "key": "field",
-        "required": true
+        "defaultValue": "Super Number Field"
       },
       {
         "type": "text",
         "label": "Label",
-        "key": "label"
+        "key": "label",
+        "defaultValue": "Super Number Field"
       },
       {
         "type": "text",
@@ -50,9 +47,8 @@
         "type": "text",
         "label": "Formatted value",
         "key": "template",
-        "placeholder" : "{{ Value }}",
         "supportsConditions": false,
-        "nested" : true
+        "nested": true
       },
       {
         "type": "text",
@@ -67,13 +63,7 @@
       {
         "type": "event",
         "label": "On change",
-        "key": "onChange",
-        "context": [
-          {
-            "label": "Value",
-            "key": "value"
-          }
-        ]
+        "key": "onChange"
       },
       {
         "type": "select",
@@ -97,6 +87,40 @@
         ]
       },
       {
+        "type": "select",
+        "label": "Alignment",
+        "key": "align",
+        "defaultValue": "flex-end",
+        "showInBar": true,
+        "barStyle": "buttons",
+        "options": [
+          {
+            "label": "Left",
+            "value": "flex-start",
+            "barIcon": "TextAlignLeft",
+            "barTitle": "Align left"
+          },
+          {
+            "label": "Center",
+            "value": "center",
+            "barIcon": "TextAlignCenter",
+            "barTitle": "Align center"
+          },
+          {
+            "label": "Right",
+            "value": "flex-end",
+            "barIcon": "TextAlignRight",
+            "barTitle": "Align right"
+          }
+        ]
+      },
+      {
+        "type": "boolean",
+        "label": "Grab Focus",
+        "key": "autofocus",
+        "defaultValue": false
+      },
+      {
         "type": "boolean",
         "label": "Debounced",
         "key": "debounced",
@@ -106,7 +130,7 @@
         "type": "number",
         "label": "Debounce Delay (ms)",
         "key": "debounceDelay",
-        "minValue" : "200",
+        "minValue": "200",
         "defaultValue": 500,
         "dependsOn": "debounced"
       },
@@ -128,65 +152,75 @@
         }
       },
       {
-        "type" : "boolean",
-        "key"  : "clearValueIcon",
+        "type": "boolean",
+        "key": "clearValueIcon",
         "label": "Clear Value Icon"
       },
       {
-        "type" : "boolean",
-        "key"  : "showIcon",
-        "label": "Add Inline Icon"
+        "type": "icon",
+        "key": "icon",
+        "label": "Inline Icon"
       },
       {
-        "type" : "icon",
-        "key"  : "icon",
-        "label": "Icon",
-        "resetOn" : "showIcon",
-        "dependsOn" : "showIcon"
+        "type": "buttonConfiguration",
+        "key": "buttons",
+        "nested": true,
+        "wide": true
       },
       {
-        "type" : "boolean",
-        "key"  : "customButtons",
-        "label" : "Add Buttons"
-      },
-      {
-        "type" : "buttonConfiguration",
-        "key"  : "buttons",
-        "nested" : true,
-        "dependsOn" : "customButtons"
-      },
-      {
-        "type" : "boolean",
-        "key"  : "units",
-        "label": "Add Units"
-      },
-      {
-        "type" : "select",
-        "key"  : "unitsSource",
-        "label" : "Units Source",
-        "dependsOn" : "units",
-        "options" : [
-          { "label" : "Data Provider", "value" : "dataprovider" },
-          { "label" : "Custom", "value" : "custom" }
+        "tag": "style",
+        "type": "select",
+        "label": "Field Mode",
+        "key": "role",
+        "defaultValue": "formInput",
+        "options": [
+          {
+            "label": "Form Input",
+            "value": "formInput"
+          },
+          {
+            "label": "Inline Input",
+            "value": "inlineInput"
+          }
         ]
       },
       {
-        "type" : "options",
-        "key"  : "unitsList",
-        "label" : "Custom Units",
-        "dependsOn" : [
-          { "setting" : "units" , "value" : true },
-          { "setting" : "unitsSource" , "value" : "custom" }
+        "tag": "style",
+        "type": "select",
+        "label": "Label Position",
+        "key": "labelPosition",
+        "showInBar": true,
+        "barStyle": "buttons",
+        "defaultValue": "fieldGroup",
+        "options": [
+          {
+            "label": "Disabled",
+            "value": false,
+            "barIcon": "Cancel",
+            "barTitle": "Disabled"
+          },
+          {
+            "label": "Auto",
+            "value": "fieldGroup",
+            "barIcon": "Group",
+            "barTitle": "Field Group"
+          },
+          {
+            "label": "Above",
+            "value": "above",
+            "barIcon": "MarginTop",
+            "barTitle": "Above"
+          },
+          {
+            "label": "Left",
+            "value": "left",
+            "barIcon": "MarginLeft",
+            "barTitle": "Left"
+          }
         ]
       },
       {
-        "type" : "text",
-        "key"  : "defaultUnit",
-        "label": "Default Unit",
-        "dependsOn" : "units"
-      },
-      {
-        "tag" : "style",
+        "tag": "style",
         "type": "select",
         "label": "Layout",
         "key": "span",
@@ -195,10 +229,10 @@
         "barStyle": "buttons",
         "options": [
           {
-            "label": "1 column",
-            "value": 6,
-            "barIcon": "Stop",
-            "barTitle": "1 column"
+            "label": "3 columns",
+            "value": 2,
+            "barIcon": "ViewColumn",
+            "barTitle": "3 columns"
           },
           {
             "label": "2 columns",
@@ -207,12 +241,25 @@
             "barTitle": "2 columns"
           },
           {
-            "label": "3 columns",
-            "value": 2,
-            "barIcon": "ViewColumn",
-            "barTitle": "3 columns"
+            "label": "1 column",
+            "value": 6,
+            "barIcon": "Stop",
+            "barTitle": "1 column"
+          },
+          {
+            "label": "Full Width",
+            "value": 12,
+            "barIcon": "Maximize",
+            "barTitle": "Full Width"
           }
         ]
+      },
+      {
+        "tag": "style",
+        "type": "boolean",
+        "key": "showDirty",
+        "label": "Show Dirty",
+        "defaultValue": false
       }
     ]
   }
