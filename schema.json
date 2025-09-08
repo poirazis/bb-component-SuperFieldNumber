@@ -24,28 +24,32 @@
         "type": "field/number",
         "label": "Field",
         "key": "field",
-        "defaultValue": "Super Number Field"
+        "defaultValue": "Number Field"
       },
       {
         "type": "text",
         "label": "Label",
         "key": "label",
-        "defaultValue": "Super Number Field"
+        "placeholder": "Field Name",
+        "resetOn": "field"
       },
       {
         "type": "text",
         "label": "Placeholder",
-        "key": "placeholder"
+        "key": "placeholder",
+        "placeholder": "Field Name",
+        "resetOn": "field"
       },
       {
         "type": "text",
         "label": "Default value",
         "key": "defaultValue",
-        "supportsConditions": false
+        "supportsConditions": false,
+        "resetOn": "field"
       },
       {
         "type": "text",
-        "label": "Formatted value",
+        "label": "Format value",
         "key": "template",
         "supportsConditions": false,
         "nested": true
@@ -64,27 +68,6 @@
         "type": "event",
         "label": "On change",
         "key": "onChange"
-      },
-      {
-        "type": "select",
-        "label": "Control Type",
-        "key": "controlType",
-        "defaultValue": "input",
-        "placeholder": "Pick Control type",
-        "options": [
-          {
-            "label": "Input",
-            "value": "input"
-          },
-          {
-            "label": "Stepper",
-            "value": "stepper"
-          },
-          {
-            "label": "Slider",
-            "value": "slider"
-          }
-        ]
       },
       {
         "type": "select",
@@ -127,14 +110,6 @@
         "defaultValue": false
       },
       {
-        "type": "number",
-        "label": "Debounce Delay (ms)",
-        "key": "debounceDelay",
-        "minValue": "200",
-        "defaultValue": 500,
-        "dependsOn": "debounced"
-      },
-      {
         "type": "boolean",
         "label": "Disabled",
         "key": "disabled",
@@ -153,8 +128,9 @@
       },
       {
         "type": "boolean",
-        "key": "clearValueIcon",
-        "label": "Clear Value Icon"
+        "key": "invisible",
+        "label": "Invisible",
+        "defaultValue": false
       },
       {
         "type": "icon",
@@ -221,38 +197,11 @@
       },
       {
         "tag": "style",
-        "type": "select",
-        "label": "Layout",
+        "type": "number",
+        "label": "Size",
         "key": "span",
         "defaultValue": 6,
-        "showInBar": true,
-        "barStyle": "buttons",
-        "options": [
-          {
-            "label": "3 columns",
-            "value": 2,
-            "barIcon": "ViewColumn",
-            "barTitle": "3 columns"
-          },
-          {
-            "label": "2 columns",
-            "value": 3,
-            "barIcon": "ColumnTwoA",
-            "barTitle": "2 columns"
-          },
-          {
-            "label": "1 column",
-            "value": 6,
-            "barIcon": "Stop",
-            "barTitle": "1 column"
-          },
-          {
-            "label": "Full Width",
-            "value": 12,
-            "barIcon": "Maximize",
-            "barTitle": "Full Width"
-          }
-        ]
+        "min": 2
       },
       {
         "tag": "style",
@@ -260,6 +209,15 @@
         "key": "showDirty",
         "label": "Show Dirty",
         "defaultValue": false
+      },
+      {
+        "tag": "style",
+        "type": "number",
+        "label": "Debounce Delay",
+        "key": "debounceDelay",
+        "minValue": "200",
+        "defaultValue": 750,
+        "dependsOn": "debounced"
       }
     ]
   }

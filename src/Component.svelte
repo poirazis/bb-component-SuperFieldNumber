@@ -1,11 +1,13 @@
 <script>
   import { getContext, onDestroy } from "svelte";
-  import CellNumber from "../../bb_super_components_shared/src/lib/SuperTableCells/CellNumber.svelte";
-  import SuperButton from "../../bb_super_components_shared/src/lib/SuperButton/SuperButton.svelte";
-  import SuperFieldLabel from "../../bb_super_components_shared/src/lib/SuperFieldLabel/SuperFieldLabel.svelte";
-  import "../../bb_super_components_shared/src/lib/SuperFieldsCommon.css";
+  import {
+    CellNumber,
+    SuperButton,
+    SuperField,
+  } from "@poirazis/supercomponents-shared";
 
-  const { styleable, enrichButtonActions, Provider } = getContext("sdk");
+  const { styleable, enrichButtonActions, Provider, builderStore } =
+    getContext("sdk");
   const component = getContext("component");
   const allContext = getContext("context");
 
@@ -17,7 +19,7 @@
   const groupColumns = getContext("field-group-columns");
   const formApi = formContext?.formApi;
 
-  export let field;
+  export let field = "Number Field";
   export let controlType;
   export let role = "formInput";
   export let labelPosition = "fieldGroup";
@@ -31,6 +33,7 @@
   export let disabled;
   export let readonly;
   export let validation;
+  export let invisible = false;
   export let helpText;
   export let align;
 
@@ -52,12 +55,14 @@
   let fieldSchema;
   let value;
 
+  $: setDefaultValue(defaultValue);
+
   $: formStep = formStepContext ? $formStepContext || 1 : 1;
-  $: labelPos = label
-    ? groupLabelPosition && labelPosition == "fieldGroup"
+
+  $: labelPos =
+    groupLabelPosition && labelPosition == "fieldGroup"
       ? groupLabelPosition
-      : labelPosition
-    : false;
+      : labelPosition;
 
   $: formField = formApi?.registerField(
     field,
@@ -75,10 +80,11 @@
     fieldSchema = value?.fieldSchema;
   });
 
-  $: value = fieldState?.value ? fieldState.value : defaultValue;
+  $: value = fieldState?.value;
+  $: error = fieldState?.error;
 
   $: cellOptions = {
-    placeholder,
+    placeholder: placeholder || field,
     defaultValue,
     template,
     disabled: disabled || groupDisabled || fieldState?.disabled,
@@ -96,12 +102,12 @@
     ...$component.styles,
     normal: {
       ...$component.styles.normal,
-      "flex-direction": labelPos == "left" ? "row" : "column",
-      "align-items": "stretch",
-      gap: labelPos == "left" ? "0.5rem" : "0rem",
-      "grid-column": span < 7 ? "span " + span : "span " + groupColumns * 6,
-      "--label-width":
-        labelPos == "left" ? (labelWidth ? labelWidth : "6rem") : "auto",
+      display:
+        invisible && !$builderStore.inBuilder
+          ? "none"
+          : $component.styles.normal.display,
+      opacity: invisible && $builderStore.inBuilder ? 0.6 : 1,
+      "grid-column": groupColumns ? `span ${span}` : "span 1",
     },
   };
 
@@ -109,6 +115,10 @@
     value = newValue;
     onChange?.({ value: newValue });
     fieldApi?.setValue(newValue);
+  };
+
+  const setDefaultValue = (val) => {
+    value = val;
   };
 
   onDestroy(() => {
@@ -122,43 +132,29 @@
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <div use:styleable={$component.styles}>
   <Provider data={{ value }} />
-  <div
-    class="superField"
-    class:left-label={labelPos == "left"}
-    class:multirow={controlType != "select"}
-  >
-    <SuperFieldLabel
-      {labelPos}
-      {labelWidth}
-      {label}
-      {helpText}
-      error={fieldState?.error}
+  <SuperField {labelPos} {labelWidth} {field} {label} {error} {helpText}>
+    <CellNumber
+      {autofocus}
+      {cellOptions}
+      {value}
+      {fieldSchema}
+      on:change={(e) => handleChange(e.detail)}
     />
 
-    <div class="inline-cells">
-      <CellNumber
-        {autofocus}
-        {cellOptions}
-        {value}
-        {fieldSchema}
-        on:change={(e) => handleChange(e.detail)}
-      />
-
-      {#if buttons?.length}
-        <div class="inline-buttons">
-          {#each buttons as { icon, text, onClick, quiet, type, size }}
-            <SuperButton
-              {icon}
-              {quiet}
-              disabled={disabled || fieldState?.disabled}
-              {size}
-              {type}
-              {text}
-              on:click={enrichButtonActions(onClick, $allContext)}
-            />
-          {/each}
-        </div>
-      {/if}
-    </div>
-  </div>
+    {#if buttons?.length}
+      <div class="inline-buttons">
+        {#each buttons as { icon, text, onClick, quiet, type, size }}
+          <SuperButton
+            {icon}
+            {quiet}
+            disabled={disabled || fieldState?.disabled}
+            {size}
+            {type}
+            {text}
+            on:click={enrichButtonActions(onClick, $allContext)}
+          />
+        {/each}
+      </div>
+    {/if}
+  </SuperField>
 </div>
