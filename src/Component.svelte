@@ -1,49 +1,68 @@
 <script>
-  import { getContext , onDestroy} from "svelte";
-  import CellNumber from "../../bb_super_components_shared/src/lib/SuperCell/cells/CellNumber.svelte";
+  import { getContext, onDestroy } from "svelte";
+  import {
+    CellNumber,
+    SuperButton,
+    SuperField,
+  } from "@poirazis/supercomponents-shared";
 
-  const { styleable, Provider, BlockComponent, Block } = getContext("sdk");
+  const { styleable, enrichButtonActions, Provider, builderStore } =
+    getContext("sdk");
   const component = getContext("component");
+  const allContext = getContext("context");
 
   const formContext = getContext("form");
   const formStepContext = getContext("form-step");
-  const labelPos = getContext("field-group");
+  const groupLabelPosition = getContext("field-group");
   const labelWidth = getContext("field-group-label-width");
+  const groupDisabled = getContext("field-group-disabled");
+  const groupColumns = getContext("field-group-columns");
   const formApi = formContext?.formApi;
 
-  export let field;
-  export let controlType
-  
-  export let customButtons
+  export let field = "Number Field";
+  export let controlType;
+  export let role = "formInput";
+  export let labelPosition = "fieldGroup";
+
   export let buttons = [];
-  export let buttonsQuiet;
 
   export let label;
   export let span = 6;
-  export let placeholder
-  export let defaultValue
-  export let disabled
-  export let readonly
-  export let validation
+  export let placeholder;
+  export let defaultValue;
+  export let disabled;
+  export let readonly;
+  export let validation;
+  export let invisible = false;
+  export let helpText;
+  export let align;
 
-  export let template
+  export let template;
 
-  export let onChange
-  export let debounced
-  export let debounceDelay
+  export let onChange;
+  export let debounced;
+  export let debounceDelay;
 
-  export let icon
-  export let clearValueIcon
+  export let icon;
+  export let clearValueIcon;
+  export let showDirty;
+  export let autofocus;
 
   let formField;
   let formStep;
   let fieldState;
   let fieldApi;
-  let fieldSchema
+  let fieldSchema;
   let value;
-  let cellState
-  
+
+  $: setDefaultValue(defaultValue);
+
   $: formStep = formStepContext ? $formStepContext || 1 : 1;
+
+  $: labelPos =
+    groupLabelPosition && labelPosition == "fieldGroup"
+      ? groupLabelPosition
+      : labelPosition;
 
   $: formField = formApi?.registerField(
     field,
@@ -53,7 +72,7 @@
     readonly,
     validation,
     formStep
-  )
+  );
 
   $: unsubscribe = formField?.subscribe((value) => {
     fieldState = value?.fieldState;
@@ -61,157 +80,81 @@
     fieldSchema = value?.fieldSchema;
   });
 
-  $: value = fieldState?.value ? fieldState.value : defaultValue
+  $: value = fieldState?.value;
+  $: error = fieldState?.error;
 
-  $: cellOptions = { 
-      placeholder, 
-      defaultValue,
-      template,
-      disabled,
-      readonly: readonly || disabled,
-      icon,
-      debounce: debounced ? debounceDelay : false,
-      clearValueIcon,
-      role: "formInput", 
-    }
+  $: cellOptions = {
+    placeholder: placeholder || field,
+    defaultValue,
+    template,
+    disabled: disabled || groupDisabled || fieldState?.disabled,
+    readonly: readonly || fieldState?.readonly,
+    icon,
+    align,
+    error: fieldState?.error,
+    debounce: debounced ? debounceDelay : false,
+    clearValueIcon,
+    role,
+    showDirty,
+  };
 
   $: $component.styles = {
     ...$component.styles,
     normal: {
       ...$component.styles.normal,
-      "flex-direction": labelPos == "left" ? "row" : "column",
-      gap: labelPos == "left" ? "0.85rem" : "0rem",
-      "grid-column": labelPos ? "span " + span : null,
-      "--label-width":
-        labelPos == "left" ? (labelWidth ? labelWidth : "6rem") : "auto",
+      display:
+        invisible && !$builderStore.inBuilder
+          ? "none"
+          : $component.styles.normal.display,
+      opacity: invisible && $builderStore.inBuilder ? 0.6 : 1,
+      "grid-column": groupColumns ? `span ${span}` : "span 1",
     },
   };
-  
-  const handleChange = ( newValue ) => {
-    onChange?.({value: newValue});
+
+  const handleChange = (newValue) => {
+    value = newValue;
+    onChange?.({ value: newValue });
     fieldApi?.setValue(newValue);
-  }
+  };
+
+  const setDefaultValue = (val) => {
+    value = val;
+  };
 
   onDestroy(() => {
-    fieldApi?.deregister()
-    unsubscribe?.()
-  })
+    fieldApi?.deregister();
+    unsubscribe?.();
+  });
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-<Block>
-  <div
-    class="superField"
-    on:focus={cellState.focus} 
-    tabindex="0"
-    use:styleable={$component.styles}  
-  >
-    {#if label}
-      <label for="superCell" class="superlabel" class:bound={formContext}>
-        {label}
-      </label>
-    {/if}
-    
-    <div class="inline-cells">
-      <CellNumber
-        bind:cellState
-        {cellOptions}
-        {value}
-        {fieldSchema}
-        on:change={(e) => handleChange(e.detail)}
-        on:blur={cellState.lostFocus}
-      />
+<!-- svelte-ignore a11y-no-static-element-interactions -->
+<div use:styleable={$component.styles}>
+  <Provider data={{ value }} />
+  <SuperField {labelPos} {labelWidth} {field} {label} {error} {helpText}>
+    <CellNumber
+      {autofocus}
+      {cellOptions}
+      {value}
+      {fieldSchema}
+      on:change={(e) => handleChange(e.detail)}
+    />
 
-      {#if customButtons && buttons?.length}
-        <div
-          class="spectrum-ActionGroup spectrum-ActionGroup--compact spectrum-ActionGroup--sizeM"
-          class:spectrum-ActionGroup--quiet={buttonsQuiet}
-        >
-          <Provider data={ {value}} >
-            {#each buttons as { text, onClick }}
-              <BlockComponent
-                type = "plugin/bb-component-SuperButton"
-                props = {{
-                  size: "M",
-                  text,
-                  onClick
-                }}>
-                </BlockComponent>
-              {/each}
-          </Provider>
-        </div>
-      {/if}
-    </div>
-
-    {#if fieldState.error}
-      <div class="error">
-        <span>{fieldState.error}</span>
+    {#if buttons?.length}
+      <div class="inline-buttons">
+        {#each buttons as { icon, text, onClick, quiet, type, size }}
+          <SuperButton
+            {icon}
+            {quiet}
+            disabled={disabled || fieldState?.disabled}
+            {size}
+            {type}
+            {text}
+            on:click={enrichButtonActions(onClick, $allContext)}
+          />
+        {/each}
       </div>
     {/if}
-
-  </div>
-</Block>
-
-<style>
-  .superField {
-    display: flex;
-    align-items: stretch;
-    justify-content: stretch;
-    min-width: 0;
-  }
-
-  .superField:focus {
-    outline: none;
-  }
-  .superlabel {
-    display: flex;
-    align-items: flex-start;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    min-width: var(--label-width);
-    max-width: var(--label-width);
-    font-size: 12px;
-    line-height: 1.75rem;
-    font-weight: 400;
-    color: var(--spectrum-global-color-gray-700);
-  }
-
-  .inline-cells {
-    flex: 1;
-    display: flex;
-    justify-items: stretch;
-    height: 2rem;
-  }
-  .warning {
-    color: var(--spectrum-global-color-red-500);
-    border-color: var(--spectrum-global-color-red-500);
-  }
-
-  .spectrum-ActionButton--quiet.warning {
-    color: var(--spectrum-global-color-red-500);
-    border: none;
-  }
-
-  .warning:hover {
-    color: #000;
-    background-color: var(--spectrum-global-color-red-500);
-  }
-  .cta {
-    color: #fff;
-    background-color: var(--primaryColor);
-  }
-
-  .disabled {
-    color: var(--spectrum-global-color-gray-600);
-    background-color: var(--spectrum-global-color-gray-200);
-  }
-
-  .superlabel.bound {
-    gap: 0.5rem;
-  }
-</style>
-
-
-
+  </SuperField>
+</div>
