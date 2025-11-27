@@ -20,7 +20,6 @@
   const formApi = formContext?.formApi;
 
   export let field = "Number Field";
-  export let controlType;
   export let role = "formInput";
   export let labelPosition = "fieldGroup";
 
@@ -32,8 +31,11 @@
   export let defaultValue;
   export let disabled;
   export let readonly;
+  export let decimals = 0;
   export let validation;
   export let invisible = false;
+  export let showStepper = true;
+  export let stepSize = 1;
   export let helpText;
   export let align;
 
@@ -54,8 +56,6 @@
   let fieldApi;
   let fieldSchema;
   let value;
-
-  $: setDefaultValue(defaultValue);
 
   $: formStep = formStepContext ? $formStepContext || 1 : 1;
 
@@ -81,6 +81,7 @@
   });
 
   $: value = fieldState?.value;
+  $: setDefaultValue(defaultValue);
   $: error = fieldState?.error;
 
   $: cellOptions = {
@@ -96,6 +97,9 @@
     clearValueIcon,
     role,
     showDirty,
+    showStepper,
+    stepSize,
+    decimals,
   };
 
   $: $component.styles = {
@@ -119,7 +123,12 @@
   };
 
   const setDefaultValue = (val) => {
-    value = val;
+    if (val == null || val == "") {
+      return;
+    } else {
+      let num = Number(val);
+      value = isNaN(num) ? null : num;
+    }
   };
 
   onDestroy(() => {
