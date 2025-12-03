@@ -60,6 +60,13 @@
         "key": "helpText"
       },
       {
+        "type": "number",
+        "label": "Decimals",
+        "key": "decimals",
+        "defaultValue": 0,
+        "min": 0
+      },
+      {
         "type": "validation/number",
         "label": "Validation",
         "key": "validation"
@@ -128,12 +135,26 @@
       },
       {
         "type": "boolean",
+        "label": "Stepper",
+        "key": "showStepper",
+        "defaultValue": true
+      },
+      {
+        "type": "number",
+        "label": "Step Size",
+        "key": "stepSize",
+        "defaultValue": 1,
+        "min": 0,
+        "dependsOn": "showStepper"
+      },
+      {
+        "type": "boolean",
         "key": "invisible",
         "label": "Invisible",
         "defaultValue": false
       },
       {
-        "type": "icon",
+        "type": "phosphorIcon",
         "key": "icon",
         "label": "Inline Icon"
       },
