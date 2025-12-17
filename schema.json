@@ -67,6 +67,12 @@
         "min": 0
       },
       {
+        "type": "text",
+        "label": "Thousands Separator",
+        "key": "thousandsSeparator",
+        "defaultValue": ","
+      },
+      {
         "type": "validation/number",
         "label": "Validation",
         "key": "validation"
@@ -148,38 +154,16 @@
         "dependsOn": "showStepper"
       },
       {
-        "type": "boolean",
-        "key": "invisible",
-        "label": "Invisible",
-        "defaultValue": false
-      },
-      {
         "type": "phosphorIcon",
         "key": "icon",
         "label": "Inline Icon"
       },
       {
-        "type": "buttonConfiguration",
+        "type": "componentConfiguration",
+        "componentType": "plugin/bb-component-SuperButton",
         "key": "buttons",
         "nested": true,
         "wide": true
-      },
-      {
-        "tag": "style",
-        "type": "select",
-        "label": "Field Mode",
-        "key": "role",
-        "defaultValue": "formInput",
-        "options": [
-          {
-            "label": "Form Input",
-            "value": "formInput"
-          },
-          {
-            "label": "Inline Input",
-            "value": "inlineInput"
-          }
-        ]
       },
       {
         "tag": "style",
@@ -218,6 +202,23 @@
       },
       {
         "tag": "style",
+        "type": "select",
+        "label": "Field Mode",
+        "key": "role",
+        "defaultValue": "formInput",
+        "options": [
+          {
+            "label": "Form Input",
+            "value": "formInput"
+          },
+          {
+            "label": "Inline Input",
+            "value": "inlineInput"
+          }
+        ]
+      },
+      {
+        "tag": "style",
         "type": "number",
         "label": "Size",
         "key": "span",
@@ -229,6 +230,13 @@
         "type": "boolean",
         "key": "showDirty",
         "label": "Show Dirty",
+        "defaultValue": false
+      },
+      {
+        "tag": "style",
+        "type": "boolean",
+        "key": "invisible",
+        "label": "Invisible",
         "defaultValue": false
       },
       {

@@ -6,8 +6,13 @@
     SuperField,
   } from "@poirazis/supercomponents-shared";
 
-  const { styleable, enrichButtonActions, Provider, builderStore } =
-    getContext("sdk");
+  const {
+    styleable,
+    enrichButtonActions,
+    Provider,
+    builderStore,
+    processStringSync,
+  } = getContext("sdk");
   const component = getContext("component");
   const allContext = getContext("context");
 
@@ -32,6 +37,7 @@
   export let disabled;
   export let readonly;
   export let decimals = 0;
+  export let thousandsSeparator = ",";
   export let validation;
   export let invisible = false;
   export let showStepper = true;
@@ -60,7 +66,7 @@
   $: formStep = formStepContext ? $formStepContext || 1 : 1;
 
   $: labelPos =
-    groupLabelPosition && labelPosition == "fieldGroup"
+    groupLabelPosition !== undefined && labelPosition == "fieldGroup"
       ? groupLabelPosition
       : labelPosition;
 
@@ -90,7 +96,7 @@
     template,
     disabled: disabled || groupDisabled || fieldState?.disabled,
     readonly: readonly || fieldState?.readonly,
-    icon,
+    icon: icon ? "ph ph-" + icon : undefined,
     align,
     error: fieldState?.error,
     debounce: debounced ? debounceDelay : false,
@@ -100,6 +106,7 @@
     showStepper,
     stepSize,
     decimals,
+    thousandsSeparator,
   };
 
   $: $component.styles = {
@@ -118,7 +125,7 @@
 
   const handleChange = (newValue) => {
     value = newValue;
-    onChange?.({ value: newValue });
+    onChange?.();
     fieldApi?.setValue(newValue);
   };
 
@@ -153,14 +160,17 @@
 
     {#if buttons?.length}
       <div class="inline-buttons">
-        {#each buttons as { icon, text, onClick, quiet, type, size }}
+        {#each buttons as { icon, onClick, ...rest }}
           <SuperButton
-            {icon}
-            {quiet}
-            disabled={disabled || fieldState?.disabled}
-            {size}
-            {type}
-            {text}
+            {...rest}
+            icon={"ph ph-" + icon}
+            disabled={processStringSync(
+              rest.disabledTemplate ?? "",
+              $allContext
+            ) === true ||
+              disabled ||
+              groupDisabled ||
+              fieldState?.disabled}
             onClick={enrichButtonActions(onClick, $allContext)}
           />
         {/each}
