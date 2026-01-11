@@ -163,7 +163,7 @@
         {#each buttons as { icon, onClick, ...rest }}
           <SuperButton
             {...rest}
-            icon={"ph ph-" + icon}
+            icon={icon ? "ph ph-" + icon : undefined}
             disabled={processStringSync(
               rest.disabledTemplate ?? "",
               $allContext
@@ -178,3 +178,12 @@
     {/if}
   </SuperField>
 </div>
+
+<style>
+  .inline-buttons {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: 0.5rem;
+  }
+</style>
